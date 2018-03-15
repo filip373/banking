@@ -3,7 +3,7 @@
 require_relative '../../app/services/model_validation'
 require_relative '../../app/errors/validation_error'
 
-RSpec.describe ModelValidation do
+RSpec.describe ModelValidation, type: :service do
   subject { described_class.new model }
   let(:model) { double valid?: valid?, errors: errors }
 

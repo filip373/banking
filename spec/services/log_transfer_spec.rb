@@ -5,7 +5,7 @@ require_relative '../../app/models/bank'
 require_relative '../../app/models/account'
 require_relative '../../app/services/log_transfer'
 
-RSpec.describe LogTransfer do
+RSpec.describe LogTransfer, type: :service do
   describe '#call' do
     let(:first_transfer) { Transfer.new from: joe, to: eve, amount: 100_00 }
     let(:second_transfer) { Transfer.new from: eve, to: joe, amount: 150_00 }
