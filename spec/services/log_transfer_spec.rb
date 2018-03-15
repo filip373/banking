@@ -4,7 +4,6 @@ require_relative '../../app/models/transfer'
 require_relative '../../app/models/bank'
 require_relative '../../app/models/account'
 require_relative '../../app/services/log_transfer'
-require 'pry'
 
 RSpec.describe LogTransfer do
   describe '#call' do
