@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'shared_examples/subject_valid'
+require 'shared_examples/failed_validation'
 
 RSpec.shared_examples 'transfer' do
   describe 'initialization' do
@@ -18,42 +19,17 @@ RSpec.shared_examples 'transfer' do
 
     context 'when from and to account is the same' do
       let(:to) { from }
-
-      describe '#valid?' do
-        it 'returns false' do
-          expect(subject.valid?).to be(false)
-        end
-      end
-
-      describe '#errors' do
-        it 'contains :same_account' do
-          expect(subject.errors).to contain_exactly(:same_account)
-        end
-      end
-    end
-
-    shared_examples 'non positive amount' do
-      describe '#valid?' do
-        it 'returns false' do
-          expect(subject.valid?).to be(false)
-        end
-      end
-
-      describe '#errors' do
-        it 'contains :non_positive_amount' do
-          expect(subject.errors).to contain_exactly(:amount_not_positive)
-        end
-      end
+      it_behaves_like 'failed validation', :same_account
     end
 
     context 'when amount is less than zero' do
       let(:amount) { -100_00 }
-      it_behaves_like 'non positive amount'
+      it_behaves_like 'failed validation', :amount_not_positive
     end
 
     context 'when amount is zero' do
       let(:amount) { 0 }
-      it_behaves_like 'non positive amount'
+      it_behaves_like 'failed validation', :amount_not_positive
     end
   end
 end

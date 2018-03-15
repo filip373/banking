@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'shared_examples/transfer'
-require 'shared_examples/not_sufficient_balance'
 require_relative '../../app/models/infra_transfer'
 require_relative '../../app/models/transfer'
 require_relative '../../app/models/account'
@@ -26,18 +25,7 @@ RSpec.describe InfraTransfer, type: :model do
   describe 'validation' do
     context 'when bank is NOT the same for both accounts' do
       let(:bank_to) { Bank.new name: 'other bank' }
-
-      describe '#valid?' do
-        it 'returns false' do
-          expect(subject.valid?).to be(false)
-        end
-      end
-
-      describe '#errors' do
-        it 'contains :not_same_bank' do
-          expect(subject.errors).to contain_exactly(:not_same_bank)
-        end
-      end
+      it_behaves_like 'failed validation', :not_same_bank
     end
 
     context 'when balance is the same as transfer amount' do
@@ -47,7 +35,7 @@ RSpec.describe InfraTransfer, type: :model do
 
     context 'when balance is lower than transfer amount' do
       let(:balance_from) { 10_00 }
-      it_behaves_like 'not sufficient balance'
+      it_behaves_like 'failed validation', :not_sufficient_balance
     end
   end
 end

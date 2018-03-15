@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'shared_examples/transfer'
-require 'shared_examples/not_sufficient_balance'
+require 'shared_examples/failed_validation'
 require_relative '../../app/models/inter_transfer'
 require_relative '../../app/models/transfer'
 require_relative '../../app/models/account'
@@ -26,18 +26,7 @@ RSpec.describe InterTransfer, type: :model do
   describe 'validation' do
     context 'when bank is the same for both accounts' do
       let(:bank_to) { bank_from }
-
-      describe '#valid?' do
-        it 'returns false' do
-          expect(subject.valid?).to be(false)
-        end
-      end
-
-      describe '#errors' do
-        it 'contains :same_bank' do
-          expect(subject.errors).to contain_exactly(:same_bank)
-        end
-      end
+      it_behaves_like 'failed validation', :same_bank
     end
 
     context 'when balance is the same as transfer amount + commission' do
@@ -47,7 +36,19 @@ RSpec.describe InterTransfer, type: :model do
 
     context 'when balance is lower than transfer amount + commission' do
       let(:balance_from) { 150_00 }
-      it_behaves_like 'not sufficient balance'
+      it_behaves_like 'failed validation', :not_sufficient_balance
+    end
+
+    context 'when transfer_amount is above limit' do
+      let(:balance_from) { 150_000_00 }
+      let(:amount) { 1_100_00 }
+      it_behaves_like 'failed validation', :above_limit
+    end
+
+    context 'when transfer amount is equal to limit' do
+      let(:balance_from) { 150_000_00 }
+      let(:amount) { 1_000_00 }
+      it_behaves_like 'subject valid'
     end
   end
 end

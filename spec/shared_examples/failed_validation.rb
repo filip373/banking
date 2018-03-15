@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'not sufficient balance' do
+RSpec.shared_examples 'failed validation' do |error|
   describe '#valid?' do
     it 'returns false' do
       expect(subject.valid?).to be(false)
@@ -8,8 +8,8 @@ RSpec.shared_examples 'not sufficient balance' do
   end
 
   describe '#errors' do
-    it 'contains :not_sufficient_balance' do
-      expect(subject.errors).to contain_exactly(:not_sufficient_balance)
+    it "contains #{error} error" do
+      expect(subject.errors).to contain_exactly(error)
     end
   end
 end
