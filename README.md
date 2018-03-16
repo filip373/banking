@@ -1,5 +1,11 @@
 # Code Test: Banking
 
+## Running
+Run the script with ```ruby bin/show_me_the_money.rb```
+
+## Testing
+Run rspec with ```bundle exec rspec```
+
 ## Solution approach:
 * models contains only related attributes, associations and validation logic
 * the whole business logic is divided in separate services for better separation
