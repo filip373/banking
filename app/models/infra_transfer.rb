@@ -4,7 +4,7 @@ require_relative './transfer'
 
 class InfraTransfer < Transfer
   def initialize(transfer)
-    super(from: transfer.from, to: transfer.to, amount: transfer.amount)
+    super from: transfer.from, to: transfer.to, amount: transfer.amount
   end
 
   def valid?
