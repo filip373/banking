@@ -35,6 +35,13 @@ RSpec.describe TransferAgent, type: :service do
 
       context 'and retries count is 1 (less than failures count)' do
         let(:max_retries) { 1 }
+        let(:call_and_rescue) do
+          begin
+            subject.call
+          rescue TransferFailure
+            nil
+          end
+        end
 
         it 'raises TransferFailure error' do
           expect { subject.call }.to raise_error(TransferFailure)
@@ -42,7 +49,7 @@ RSpec.describe TransferAgent, type: :service do
 
         it 'tries to process transfer twice' do
           expect(transfer).to receive(:call).twice.with(no_args)
-          subject.call rescue nil
+          call_and_rescue
         end
       end
 

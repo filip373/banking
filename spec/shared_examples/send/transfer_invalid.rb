@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative '../../../app/errors/validation_error'
 
 RSpec.shared_examples 'transfer invalid' do

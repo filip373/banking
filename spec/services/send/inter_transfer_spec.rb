@@ -52,7 +52,9 @@ RSpec.describe Send::InterTransfer, type: :service do
         end
 
         describe 'logging' do
-          before { allow(LogTransfer).to receive(:new).and_return(log_transfer) }
+          before do
+            allow(LogTransfer).to receive(:new).and_return(log_transfer)
+          end
           let(:log_transfer) { double call: nil }
 
           it 'calls log service with :success status', :aggregate_failures do
@@ -67,6 +69,13 @@ RSpec.describe Send::InterTransfer, type: :service do
 
       context 'and raises an TransferFailure error' do
         let(:fail_chance) { 100 }
+        let(:call_and_rescue) do
+          begin
+            subject.call
+          rescue TransferFailure
+            nil
+          end
+        end
 
         it 'raises TransferFailure error' do
           expect { subject.call }
@@ -74,17 +83,19 @@ RSpec.describe Send::InterTransfer, type: :service do
         end
 
         it 'does NOT take any money from sender balance' do
-          subject.call rescue nil
+          call_and_rescue
           expect(joe.balance).to eq(1_500_00)
         end
 
         it 'does NOT give any amoun to receiver balance' do
-          subject.call rescue nil
+          call_and_rescue
           expect(eve.balance).to eq(1_000_00)
         end
 
         describe 'logging' do
-          before { allow(LogTransfer).to receive(:new).and_return(log_transfer) }
+          before do
+            allow(LogTransfer).to receive(:new).and_return(log_transfer)
+          end
           let(:log_transfer) { double call: nil }
 
           it 'calls log service with :failure status', :aggregate_failures do
@@ -92,7 +103,7 @@ RSpec.describe Send::InterTransfer, type: :service do
               .to receive(:new)
               .with(transfer: instance_of(InterTransfer), status: :failure)
             expect(log_transfer).to receive(:call).with(no_args)
-            subject.call rescue nil
+            call_and_rescue
           end
         end
       end
